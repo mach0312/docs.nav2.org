@@ -169,8 +169,6 @@ Below is the example configuration using 4 sub-polygons to cover the full range 
         theta_min: -1.0
         theta_max: 1.0
 
-
-
 .. note::
   It is recommended to include a ``stopped`` sub polygon as the last entry in the ``velocity_polygons`` list to cover the entire range of the robot's velocity limits. In cases where the velocity is not within the scope of any sub polygons, the Collision Monitor will log a warning message and continue with the previously matched polygon.
 
@@ -179,7 +177,7 @@ Below is the example configuration using 4 sub-polygons to cover the full range 
 
 **For holomic robots:**
 
-For holomic robots, the ``holonomic`` property should be set to ``true``. In this scenario, the ``linear_min`` and ``linear_max`` parameters should cover  the magnitude of the robot’s resultant velocity limits (using only non-negative values ``>=0.0``), while the ``theta_min`` and ``theta_max`` parameters should cover the robot's angular velocity limits. Additionally, there will be 2 more parameters, ``direction_start_angle`` and ``direction_end_angle``, to specify the resultant velocity direction. The covered direction will always span from ``direction_start_angle`` to ``direction_end_angle`` in the **counter-clockwise** direction.
+For holomic robots, the ``holonomic`` property should be set to ``true``. In this scenario, the ``linear_min`` and ``linear_max`` parameters should cover  the magnitude of the robot’s resultant velocity limits (using only non-negative values), while the ``theta_min`` and ``theta_max`` parameters should cover the robot's angular velocity limits. Additionally, there will be 2 more parameters, ``direction_start_angle`` and ``direction_end_angle``, to specify the resultant velocity direction. The covered direction will always span from ``direction_start_angle`` to ``direction_end_angle`` in the **counter-clockwise** direction.
 
 .. image:: images/Collision_Monitor/holonomic_direction.png
   :width: 365px
@@ -193,7 +191,7 @@ Below shows some common configurations for holonomic robots that cover multiple 
 
   collision_monitor:
     ros__parameters:
-      base_frame_id: "base_link"
+      base_frame_id: "base_footprint"
       odom_frame_id: "odom"
       cmd_vel_in_topic: "cmd_vel_smoothed"
       cmd_vel_out_topic: "nav_vel"
@@ -201,14 +199,11 @@ Below shows some common configurations for holonomic robots that cover multiple 
       transform_tolerance: 0.3
       source_timeout: 1.0
       base_shift_correction: True
-      stop_pub_timeout: 20000.0
-      holonomic: true
+      stop_pub_timeout: 2.0
+      holonomic: true       # Set to true for holonomic robots
 
-      polygons: ["VelocityPolygonSlow", "VelocityPolygonStop"]
+      polygons: ["VelocityPolygonSlow"]
 
-      # ==========================================
-      # 1. Slowdown Polygon
-      # ==========================================
       VelocityPolygonSlow:
         type: "velocity_polygon"
         action_type: "slowdown"
@@ -226,8 +221,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.6, 0.4], [0.6, -0.4], [-0.3, -0.4], [-0.3, 0.4]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: -0.39
-          direction_end_angle: 0.39
+          direction_start_angle: -0.785   # -0.25pi
+          direction_end_angle: 0.785      # 0.25pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -235,8 +230,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.55, 0.55], [0.55, -0.3], [-0.3, -0.3], [-0.3, 0.55]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: 0.39
-          direction_end_angle: 1.18
+          direction_start_angle: 0.0      # 0.0pi
+          direction_end_angle: 1.571      # 0.5pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -244,8 +239,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.4, 0.6], [0.4, -0.4], [-0.4, -0.4], [-0.4, 0.6]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: 1.18
-          direction_end_angle: 1.96
+          direction_start_angle: 0.785     # 0.25pi
+          direction_end_angle: 2.356       # 0.75pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -253,8 +248,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.3, 0.55], [0.3, -0.3], [-0.55, -0.3], [-0.55, 0.55]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: 1.96
-          direction_end_angle: 2.75
+          direction_start_angle: -3.1415   # -pi
+          direction_end_angle: -1.571      # -0.5pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -262,8 +257,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.3, 0.4], [0.3, -0.4], [-0.6, -0.4], [-0.6, 0.4]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: 2.75
-          direction_end_angle: -2.75
+          direction_start_angle: 2.356     # 0.75pi
+          direction_end_angle: -2.356      # -0.75pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -271,8 +266,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.3, 0.3], [0.3, -0.55], [-0.55, -0.55], [-0.55, 0.3]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: -2.75
-          direction_end_angle: -1.96
+          direction_start_angle: 1.571     # 0.5pi
+          direction_end_angle: 3.1415      # pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -280,8 +275,8 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.4, 0.4], [0.4, -0.6], [-0.4, -0.6], [-0.4, 0.4]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: -1.96
-          direction_end_angle: -1.18
+          direction_start_angle: -2.356    # -0.75pi
+          direction_end_angle: -0.785      # -0.25pi
           theta_min: -1.0
           theta_max: 1.0
 
@@ -289,40 +284,18 @@ Below shows some common configurations for holonomic robots that cover multiple 
           points: "[[0.55, 0.3], [0.55, -0.55], [-0.3, -0.55], [-0.3, 0.3]]"
           linear_min: 0.05
           linear_max: 1.0
-          direction_start_angle: -1.18
-          direction_end_angle: -0.39
+          direction_start_angle: -1.571   # -0.5pi
+          direction_end_angle: 0.0        # 0.0pi
           theta_min: -1.0
           theta_max: 1.0
 
+        # Stopped
         stopped:
           points: "[[0.4, 0.4], [0.4, -0.4], [-0.4, -0.4], [-0.4, 0.4]]"
           linear_min: 0.0
           linear_max: 0.05
           direction_start_angle: -3.1415
           direction_end_angle: 3.1415
-          theta_min: -1.0
-          theta_max: 1.0
-
-      # ==========================================
-      # 2. Stop Polygon
-      # ==========================================
-      VelocityPolygonStop:
-        type: "velocity_polygon"
-        action_type: "stop"
-        holonomic: true
-        visualize: True
-        enabled: True
-        velocity_polygons: ["moving_stop", "stopped"]
-        moving_stop:
-          points: "[[0.35, 0.35], [0.35, -0.35], [-0.35, -0.35], [-0.35, 0.35]]"
-          linear_min: 0.05
-          linear_max: 1.0
-          theta_min: -1.0
-          theta_max: 1.0
-        stopped:
-          points: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
-          linear_min: 0.0
-          linear_max: 0.05
           theta_min: -1.0
           theta_max: 1.0
 
